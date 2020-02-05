@@ -1,25 +1,43 @@
-module Main exposing (..)
+module Main exposing (main)
 
 import Browser
-import Html exposing (Html, button, div, text)
-import Html.Events exposing (onClick)
+import Html exposing (Html, div, input)
+import Html.Attributes exposing (value, placeholder)
+import Html.Events exposing (onInput)
 
+
+type alias Model = 
+  { value: Float
+  , text: String
+  }
+init: Model
+init = 
+  { value = 0.0
+  , text = "Hello, World"
+  }
+
+main: Program () Model Msg
 main =
-  Browser.sandbox { init = 0, update = update, view = view }
+  Browser.sandbox { init = init, update = update, view = view }
 
-type Msg = Increment | Decrement
+type Msg 
+  = Change String 
 
+
+update : Msg -> Model -> Model
 update msg model =
-  case msg of
-    Increment ->
-      model + 1
+  case msg of 
+    Change newValue -> 
+      {model | text = String.reverse newValue}
 
-    Decrement ->
-      model - 1
 
+view: Model -> Html Msg 
 view model =
   div []
-    [ button [ onClick Decrement ] [ text "-" ]
-    , div [] [ text (String.fromInt model) ]
-    , button [ onClick Increment ] [ text "+" ]
+    [ 
+      console model.text "Start Here"
     ]
+    
+console : String -> String ->  Html Msg
+console v p  =
+  input[ value v, placeholder p, onInput Change ][]
